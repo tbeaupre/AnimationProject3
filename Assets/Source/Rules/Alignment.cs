@@ -2,15 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Alignment : Rule {
+public class Alignment : FlockingRule {
 
-	// Use this for initialization
-	void Start () {
-		
+	public Alignment(Boid target) : base(target)
+	{
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+
+	public override Vector2 GetForce()
+	{
+		Vector2 averageHeading = new Vector2(0, 0);
+		foreach (Boid neighbor in neighbors)
+		{
+			averageHeading += neighbor.heading;
+		}
+		averageHeading /= neighbors.Count;
+
+		return averageHeading - target.heading;
 	}
 }

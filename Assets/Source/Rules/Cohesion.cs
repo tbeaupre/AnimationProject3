@@ -2,15 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Cohesion : Rule {
+public class Cohesion : FlockingRule {
 
-	// Use this for initialization
-	void Start () {
-		
+	public Cohesion(Boid target) : base(target)
+	{
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+
+	public override Vector2 GetForce()
+	{
+		Vector2 center = new Vector2(0, 0);
+		foreach (Boid neighbor in neighbors)
+		{
+			center += neighbor.position;
+		}
+		center /= neighbors.Count;
+		return seek(center);
 	}
 }

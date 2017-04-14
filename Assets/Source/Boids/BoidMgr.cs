@@ -15,7 +15,8 @@ public class BoidMgr : MonoBehaviour {
 	// Boid properties
 	const int QUANTITY = 10;
 	const float SENSE_RADIUS = 50;
-	const float MAX_SPEED = 2f;
+	const float COLLISION_RADIUS = 1;
+	const float MAX_SPEED = 1.5f;
 	const float MAX_FORCE = 2.5f;
 
 	// Boundary Rule
@@ -28,42 +29,28 @@ public class BoidMgr : MonoBehaviour {
 	Rule pursueEvadeRule = new Rule();
 
 	// Flocking Rule Set
-	const float SEPARATION_WEIGHT = 0.8f;
+	const float SEPARATION_WEIGHT = 1f;
 	const float ALIGNMENT_WEIGHT = 0.3f;
-	const float COHESION_WEIGHT = 0.2f;
+	const float COHESION_WEIGHT = 0.3f;
 	Separation sepRule = new Separation();
 	Alignment aliRule = new Alignment();
 	Cohesion cohRule = new Cohesion();
 
 
 	List<Boid> boids = new List<Boid>(); // updated list of boids
+	List<Boid> convertedBoids = new List<Boid>();
 
 	// Use this for initialization
 	void Start () {
-		Random.InitState(0);
-		CreateBoids(BoidType.RED, QUANTITY);
+		Random.InitState(1);
 		CreateBoids(BoidType.BLUE, QUANTITY);
+		CreateBoids(BoidType.RED, QUANTITY);
 		CreateBoids(BoidType.GREEN, QUANTITY);
 	}
 
 	void CreateBoids (BoidType type, int quantity)
 	{
-		Boid boidPrefab;
-		switch(type)
-		{
-		case(BoidType.BLUE):
-			boidPrefab = blueBoidPrefab;
-			break;
-		case(BoidType.GREEN):
-			boidPrefab = greenBoidPrefab;
-			break;
-		case(BoidType.RED):
-			boidPrefab = redBoidPrefab;
-			break;
-		default:
-			boidPrefab = blueBoidPrefab;
-			break;
-		}
+		Boid boidPrefab = GetBoidPrefab(type);
 
 		Quaternion rot = new Quaternion();
 		for (int i = 0; i < quantity; i++)
@@ -72,6 +59,21 @@ public class BoidMgr : MonoBehaviour {
 			Debug.Log(string.Format("Drawing boid {0}", i));
 			boidClone.Init(type, MAX_SPEED, MAX_FORCE, GetRandomHeading()); 
 			boids.Add(boidClone);
+		}
+	}
+
+	Boid GetBoidPrefab(BoidType type)
+	{
+		switch(type)
+		{
+		case(BoidType.BLUE):
+			return blueBoidPrefab;
+		case(BoidType.GREEN):
+			return greenBoidPrefab;
+		case(BoidType.RED):
+			return redBoidPrefab;
+		default:
+			return blueBoidPrefab;
 		}
 	}
 
@@ -96,6 +98,22 @@ public class BoidMgr : MonoBehaviour {
 		{
 			boid.force = GetBoidForce(boid);
 			boid.MgrUpdate();
+			CollisionDetect(boid);
+		}
+		foreach (Boid boid in convertedBoids)
+		{
+			if (boids.Contains(boid))
+			{
+				boids.Remove(boid);
+
+				// Create a new boid, initialize it based on the old one and add it to the list.
+				Boid targetClone = Object.Instantiate<Boid>(GetBoidPrefab(boid.predatorType), boid.position, new Quaternion());
+				Debug.Log("Converting Boid!");
+				targetClone.Init(boid, boid.predatorType);
+				boids.Add(targetClone);
+
+				Destroy(boid.gameObject);
+			}
 		}
 	}
 
@@ -105,7 +123,6 @@ public class BoidMgr : MonoBehaviour {
 		Vector2 force = boundary.GetForce(boid) * BOUNDARY_WEIGHT;
 		if (force.magnitude >= MAX_FORCE)
 		{
-			Debug.Log("Approaching Wall!");
 			return Vector2.ClampMagnitude(force, MAX_FORCE);
 		}
 
@@ -139,8 +156,23 @@ public class BoidMgr : MonoBehaviour {
 		}
 
 		// Add in attraction and repulsion to other types
-		Debug.Log("Not full force");
 		return force;
+	}
+
+	void CollisionDetect(Boid boid)
+	{
+		Boid target = FindClosestOfType(boid, boid.preyType);
+		if (target != null)
+		{
+			if (Distance(boid, target) < COLLISION_RADIUS)
+			{
+				// Collision has occurred! Convert target to the type of boid
+				if (!convertedBoids.Contains(target))
+				{
+					convertedBoids.Add(target);
+				}
+			}
+		}
 	}
 
 	public List<Boid> FindNeighbors(Boid target)

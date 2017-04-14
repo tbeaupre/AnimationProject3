@@ -24,6 +24,21 @@ public abstract class Boid : MonoBehaviour {
 		this.heading = heading;
 	}
 
+	public void Init(Boid boid, BoidType type)
+	{
+		this.maxSpeed = boid.maxSpeed;
+		this.maxForce = boid.maxForce;
+
+		this.type = type;
+		this.preyType = GetPreyType();
+		this.predatorType = GetPredatorType();
+
+		this.position = boid.position;
+		this.transform.position = position;
+		this.heading = boid.heading;
+		this.force = boid.force;
+	}
+
 	// Use this for initialization
 	void Start () {
 	}

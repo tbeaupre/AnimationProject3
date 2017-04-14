@@ -14,15 +14,17 @@ public class BoidMgr : MonoBehaviour {
 
 	// Boid properties
 	const int QUANTITY = 10;
-	const float SENSE_RADIUS = 20;
-	const float MAX_SPEED = 0.5f;
-	const float MAX_FORCE = 0.7f;
+	const float SENSE_RADIUS = 50;
+	const float MAX_SPEED = 1f;
+	const float MAX_FORCE = 1.5f;
 
 	// Flocking rule set
-	const float SEPARATION_WEIGHT = 0.5f;
-	const float ALIGNMENT_WEIGHT = 0.5f;
-	const float COHESION_WEIGHT = 0.5f;
-	FlockingRuleSet flockingRuleSet = new FlockingRuleSet(SEPARATION_WEIGHT, ALIGNMENT_WEIGHT, COHESION_WEIGHT);
+	const float SEPARATION_WEIGHT = 0.8f;
+	const float ALIGNMENT_WEIGHT = 0.3f;
+	const float COHESION_WEIGHT = 0.2f;
+	Separation sepRule = new Separation();
+	Alignment aliRule = new Alignment();
+	Cohesion cohRule = new Cohesion();
 
 	const float BOUNDARY_WEIGHT = 2f;
 	Boundary boundary = new Boundary(WIDTH, HEIGHT, MAX_SPEED * 2);
@@ -32,12 +34,36 @@ public class BoidMgr : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Random.InitState(0);
-		Quaternion rot = new Quaternion();
-		for (int i = 0; i < QUANTITY; i++)
+		CreateBoids(BoidType.RED, QUANTITY);
+		CreateBoids(BoidType.BLUE, QUANTITY);
+		CreateBoids(BoidType.GREEN, QUANTITY);
+	}
+
+	void CreateBoids (BoidType type, int quantity)
+	{
+		Boid boidPrefab;
+		switch(type)
 		{
-			Boid boidClone = Object.Instantiate<Boid>(greenBoidPrefab, GetRandomPos(), rot);
+		case(BoidType.BLUE):
+			boidPrefab = blueBoidPrefab;
+			break;
+		case(BoidType.GREEN):
+			boidPrefab = greenBoidPrefab;
+			break;
+		case(BoidType.RED):
+			boidPrefab = redBoidPrefab;
+			break;
+		default:
+			boidPrefab = blueBoidPrefab;
+			break;
+		}
+
+		Quaternion rot = new Quaternion();
+		for (int i = 0; i < quantity; i++)
+		{
+			Boid boidClone = Object.Instantiate<Boid>(boidPrefab, GetRandomPos(), rot);
 			Debug.Log(string.Format("Drawing boid {0}", i));
-			boidClone.Init(BoidType.GREEN, MAX_SPEED, MAX_FORCE, GetRandomHeading()); 
+			boidClone.Init(type, MAX_SPEED, MAX_FORCE, GetRandomHeading()); 
 			boids.Add(boidClone);
 		}
 	}
@@ -74,10 +100,20 @@ public class BoidMgr : MonoBehaviour {
 			Debug.Log("Approaching Wall!");
 			return Vector2.ClampMagnitude(force, MAX_FORCE);
 		}
-		//force += flockingRuleSet.GetForce(boid, FindNeighbors(boid));
+
+		force += sepRule.GetForce(boid, FindNeighbors(boid)) * SEPARATION_WEIGHT;
 		if (force.magnitude >= MAX_FORCE)
 		{
-			Debug.Log("Flocking");
+			return Vector2.ClampMagnitude(force, MAX_FORCE);
+		}
+		force += aliRule.GetForce(boid, FindNeighbors(boid)) * ALIGNMENT_WEIGHT;
+		if (force.magnitude >= MAX_FORCE)
+		{
+			return Vector2.ClampMagnitude(force, MAX_FORCE);
+		}
+		force += cohRule.GetForce(boid, FindNeighbors(boid)) * COHESION_WEIGHT;
+		if (force.magnitude >= MAX_FORCE)
+		{
 			return Vector2.ClampMagnitude(force, MAX_FORCE);
 		}
 

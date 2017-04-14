@@ -8,12 +8,13 @@ public class Alignment : FlockingRule {
 	{
 		if (neighbors.Count > 0)
 		{
-			Vector2 averageHeading = new Vector2(0, 0);
+			Vector2 averageHeading;
+			Vector2 sum = new Vector2(0, 0);
 			foreach (Boid neighbor in neighbors)
 			{
-				averageHeading += neighbor.heading;
+				sum += neighbor.heading;
 			}
-			averageHeading /= neighbors.Count;
+			averageHeading = sum / neighbors.Count;
 
 			return averageHeading - target.heading;
 		} else

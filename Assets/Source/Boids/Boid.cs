@@ -35,7 +35,7 @@ public abstract class Boid : MonoBehaviour {
 
 		// Apply force and respect max speed
 		heading += force;
-		Vector2.ClampMagnitude(heading, maxSpeed);
+		heading = Vector2.ClampMagnitude(heading, maxSpeed);
 
 		// Reset 2D and 3D positions
 		position += heading;

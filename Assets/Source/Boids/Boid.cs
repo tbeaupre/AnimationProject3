@@ -7,6 +7,8 @@ public abstract class Boid : MonoBehaviour {
 	public float maxForce { get; set; }
 
 	public BoidType type { get; set; }
+	public BoidType preyType { get; set; }
+	public BoidType predatorType { get; set; }
 
 	public Vector2 position { get; set; }
 	public Vector2 heading { get; set; }
@@ -14,6 +16,8 @@ public abstract class Boid : MonoBehaviour {
 
 	public void Init (BoidType type, float maxSpeed, float maxForce, Vector2 heading) {
 		this.type = type;
+		this.preyType = GetPreyType();
+		this.predatorType = GetPredatorType();
 		this.position = this.transform.position;
 		this.maxSpeed = maxSpeed;
 		this.maxForce = maxForce;
@@ -27,6 +31,36 @@ public abstract class Boid : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+	}
+
+	public BoidType GetPreyType()
+	{
+		switch (type)
+		{
+		case(BoidType.BLUE):
+			return BoidType.GREEN;
+		case(BoidType.GREEN):
+			return BoidType.RED;
+		case(BoidType.RED):
+			return BoidType.BLUE;
+		default:
+			return BoidType.GREEN;
+		}
+	}
+
+	public BoidType GetPredatorType()
+	{
+		switch (type)
+		{
+		case(BoidType.BLUE):
+			return BoidType.RED;
+		case(BoidType.GREEN):
+			return BoidType.BLUE;
+		case(BoidType.RED):
+			return BoidType.GREEN;
+		default:
+			return BoidType.RED;
+		}
 	}
 
 	public void MgrUpdate() {

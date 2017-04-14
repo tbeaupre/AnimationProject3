@@ -14,7 +14,7 @@ public class Cohesion : FlockingRule {
 				center += neighbor.position;
 			}
 			center /= neighbors.Count;
-			return seek(target, center);
+			return Seek(target, center);
 		} else
 		{
 			return center;

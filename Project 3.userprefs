@@ -1,15 +1,14 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.AttachToProcess" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Source\Boids\BoidMgr.cs">
     <Files>
-      <File FileName="Assets\Source\Rules\Rule.cs" Line="1" Column="1" />
-      <File FileName="Assets\Source\Rules\FlockingRule.cs" Line="1" Column="1" />
-      <File FileName="Assets\Source\Rules\FlockingRuleSet.cs" Line="1" Column="1" />
-      <File FileName="Assets\Source\Rules\Separation.cs" Line="1" Column="1" />
-      <File FileName="Assets\Source\Rules\Alignment.cs" Line="1" Column="1" />
-      <File FileName="Assets\Source\Rules\Cohesion.cs" Line="1" Column="1" />
-      <File FileName="Assets\Source\Boids\Boid.cs" Line="1" Column="1" />
-      <File FileName="Assets\Source\Boids\BoidMgr.cs" Line="13" Column="4" />
+      <File FileName="Assets\Source\Boids\BoidMgr.cs" Line="25" Column="40" />
+      <File FileName="Assets\Source\Boids\Boid.cs" Line="38" Column="13" />
+      <File FileName="Assets\Source\Rules\FlockingRuleSet.cs" Line="33" Column="72" />
+      <File FileName="Assets\Source\Rules\Separation.cs" Line="12" Column="60" />
+      <File FileName="Assets\Source\Rules\Alignment.cs" Line="7" Column="2" />
+      <File FileName="Assets\Source\Rules\Cohesion.cs" Line="6" Column="2" />
+      <File FileName="Assets\Source\Walls\Boundary.cs" Line="17" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -15,10 +15,19 @@ public class BoidMgr : MonoBehaviour {
 	// Boid properties
 	const int QUANTITY = 10;
 	const float SENSE_RADIUS = 50;
-	const float MAX_SPEED = 1f;
-	const float MAX_FORCE = 1.5f;
+	const float MAX_SPEED = 2f;
+	const float MAX_FORCE = 2.5f;
 
-	// Flocking rule set
+	// Boundary Rule
+	const float BOUNDARY_WEIGHT = 2f;
+	Boundary boundary = new Boundary(WIDTH, HEIGHT, MAX_SPEED * 2);
+
+	// Pursuit Rule
+	const float EVADE_WEIGHT = 0.7f;
+	const float PURSUE_WEIGHT = 0.5f;
+	Rule pursueEvadeRule = new Rule();
+
+	// Flocking Rule Set
 	const float SEPARATION_WEIGHT = 0.8f;
 	const float ALIGNMENT_WEIGHT = 0.3f;
 	const float COHESION_WEIGHT = 0.2f;
@@ -26,8 +35,6 @@ public class BoidMgr : MonoBehaviour {
 	Alignment aliRule = new Alignment();
 	Cohesion cohRule = new Cohesion();
 
-	const float BOUNDARY_WEIGHT = 2f;
-	Boundary boundary = new Boundary(WIDTH, HEIGHT, MAX_SPEED * 2);
 
 	List<Boid> boids = new List<Boid>(); // updated list of boids
 
@@ -94,6 +101,7 @@ public class BoidMgr : MonoBehaviour {
 
 	Vector2 GetBoidForce(Boid boid)
 	{
+		// Boundaries first!
 		Vector2 force = boundary.GetForce(boid) * BOUNDARY_WEIGHT;
 		if (force.magnitude >= MAX_FORCE)
 		{
@@ -101,6 +109,19 @@ public class BoidMgr : MonoBehaviour {
 			return Vector2.ClampMagnitude(force, MAX_FORCE);
 		}
 
+		// Evasion and Pursuit next!
+		force += pursueEvadeRule.Evade(boid, FindClosestOfType(boid, boid.predatorType)) * EVADE_WEIGHT;
+		if (force.magnitude >= MAX_FORCE)
+		{
+			return Vector2.ClampMagnitude(force, MAX_FORCE);
+		}
+		force += pursueEvadeRule.Pursue(boid, FindClosestOfType(boid, boid.preyType)) * PURSUE_WEIGHT;
+		if (force.magnitude >= MAX_FORCE)
+		{
+			return Vector2.ClampMagnitude(force, MAX_FORCE);
+		}
+
+		// Flocking third!
 		force += sepRule.GetForce(boid, FindNeighbors(boid)) * SEPARATION_WEIGHT;
 		if (force.magnitude >= MAX_FORCE)
 		{
@@ -135,6 +156,37 @@ public class BoidMgr : MonoBehaviour {
 		}
 		//Debug.Log(string.Format("{0} neighbors found.", neighbors.Count));
 		return neighbors;
+	}
+
+	public List<Boid> FindNeighborsOfType(Boid target, BoidType type)
+	{
+		List<Boid> neighbors = new List<Boid>();
+
+		foreach (Boid boid in boids)
+		{
+			if ((boid.type == type) && (Distance(target, boid) <= SENSE_RADIUS))
+			{
+				neighbors.Add(boid);
+			}
+		}
+		return neighbors;
+	}
+
+	public Boid FindClosestOfType(Boid target, BoidType type)
+	{
+		Boid closestBoid = null;
+		float closestDistance = SENSE_RADIUS;
+
+		foreach (Boid boid in boids)
+		{
+			float distance = Distance(target, boid);
+			if ((boid.type == type) && (distance < closestDistance))
+			{
+				closestBoid = boid;
+				closestDistance = distance;
+			}
+		}
+		return closestBoid;
 	}
 
 	float Distance(Boid b1, Boid b2)

@@ -25,11 +25,17 @@ public class FlockingRuleSet : FlockingRule
 
 	public override Vector2 GetForce ()
 	{
-		Vector2 separationForce = sRule.GetForce() * sWeight;
-		Vector2 alignmentForce = aRule.GetForce() * aWeight;
-		Vector2 cohesionForce = cRule.GetForce() * cWeight;
-		Vector2 sumForce = separationForce + alignmentForce + cohesionForce;
-		return Vector2.ClampMagnitude(sumForce, target.maxSpeed);
+		if (neighbors.Count > 0)
+		{
+			Vector2 separationForce = sRule.GetForce() * sWeight;
+			Vector2 alignmentForce = aRule.GetForce() * aWeight;
+			Vector2 cohesionForce = cRule.GetForce() * cWeight;
+			Vector2 sumForce = separationForce + alignmentForce + cohesionForce;
+			return Vector2.ClampMagnitude(sumForce, target.maxSpeed);
+		} else
+		{
+			return new Vector2(0, 0);
+		}
 	}
 
 	public override void UpdateNeighbors (List<Boid> neighbors)

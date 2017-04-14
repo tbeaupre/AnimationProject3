@@ -10,27 +10,37 @@ public abstract class Boid : MonoBehaviour {
 	public float senseRadius { get; set; }
 	public BoidType type { get; set; }
 
-	public Vector2 position { get; set; }
+	[SerializeField] public Vector2 position { get; set; }
 	public Vector2 heading { get; set; }
 	public float maxSpeed { get; set; }
 
-	public void Init (BoidMgr mgr, BoidType type) {
+	public void Init (BoidMgr mgr, BoidType type, float senseRadius, float maxSpeed, Vector2 heading) {
+		Debug.Log("Initializing");
 		this.mgr = mgr;
 		this.type = type;
+		this.position = this.transform.position;
+		this.ruleSet = new FlockingRuleSet(this, 0.5f, 0.3f, 0.2f);
+		this.senseRadius = senseRadius;
+		this.maxSpeed = maxSpeed;
+		this.heading = heading;
 	}
 
 	// Use this for initialization
 	void Start () {
-		this.ruleSet = new FlockingRuleSet(this, 1, 1, 1);
-		this.senseRadius = 100;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+
+	}
+
+	public void MgrUpdate() {
+		Debug.Log("Updating");
 		ruleSet.UpdateNeighbors(mgr.FindNeighbors(this));
 
 		Vector2 force = GetForce();
-		heading = force.normalized;
+		heading += force.normalized;
+		Vector2.ClampMagnitude(heading, maxSpeed);
 
 		position += force;
 

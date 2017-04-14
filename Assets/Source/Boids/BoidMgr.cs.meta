@@ -1,10 +1,16 @@
 fileFormatVersion: 2
 guid: 863d789ff134b89458eb4e09e34ca836
-timeCreated: 1492050949
+timeCreated: 1492179182
 licenseType: Pro
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - redBoidPrefab: {fileID: 114295621750161604, guid: 99d5bc2d680498f4a87b348763095586,
+      type: 2}
+  - blueBoidPrefab: {fileID: 114248577758829640, guid: 16e3fba627db7ab4281e103ed9dd0c8d,
+      type: 2}
+  - greenBoidPrefab: {fileID: 114640450352574666, guid: d8551ef9253527047b2b7d3db7c08c70,
+      type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

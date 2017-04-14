@@ -9,14 +9,14 @@ public class BoidMgr : MonoBehaviour {
 	public Boid greenBoidPrefab;
 
 	// Screen information
-	const int WIDTH = 100;
+	const int WIDTH = 134;
 	const int HEIGHT = 100;
 
 	// Boid properties
 	const int QUANTITY = 10;
-	const float SENSE_RADIUS = 50;
-	const float MAX_SPEED = 0.1f;
-	const float MAX_FORCE = 0.2f;
+	const float SENSE_RADIUS = 20;
+	const float MAX_SPEED = 0.5f;
+	const float MAX_FORCE = 0.7f;
 
 	// Flocking rule set
 	const float SEPARATION_WEIGHT = 0.5f;
@@ -74,7 +74,7 @@ public class BoidMgr : MonoBehaviour {
 			Debug.Log("Approaching Wall!");
 			return Vector2.ClampMagnitude(force, MAX_FORCE);
 		}
-		force += flockingRuleSet.GetForce(boid, FindNeighbors(boid));
+		//force += flockingRuleSet.GetForce(boid, FindNeighbors(boid));
 		if (force.magnitude >= MAX_FORCE)
 		{
 			Debug.Log("Flocking");

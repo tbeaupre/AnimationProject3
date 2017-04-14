@@ -60,7 +60,6 @@
      <Compile Include="Assets\Source\Rules\Rule.cs" />
      <Compile Include="Assets\Source\Rules\Separation.cs" />
      <Compile Include="Assets\Source\Walls\Boundary.cs" />
-     <Compile Include="Assets\Source\Walls\ForceField.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

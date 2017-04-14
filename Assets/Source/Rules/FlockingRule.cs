@@ -2,17 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class FlockingRule : Rule {
-	public List<Boid> neighbors;
-
-	public FlockingRule (Boid target)
+public abstract class FlockingRule : Rule
+{
+	public virtual Vector2 GetForce(Boid target, List<Boid> neighbors)
 	{
-		this.target = target;
-		this.neighbors = new List<Boid>();
-	}
-
-	public virtual void UpdateNeighbors(List<Boid> neighbors)
-	{
-		this.neighbors = neighbors;
+		return new Vector2(0, 0);
 	}
 }
+
+

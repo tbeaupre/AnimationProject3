@@ -12,38 +12,30 @@ public class FlockingRuleSet : FlockingRule
 	float aWeight;
 	float cWeight;
 
-	public FlockingRuleSet (Boid target, float separationWeight, float alignmentWeight, float cohesionWeight) : base(target)
+	public FlockingRuleSet (float separationWeight, float alignmentWeight, float cohesionWeight)
 	{
 		this.sWeight = separationWeight;
 		this.aWeight = alignmentWeight;
 		this.cWeight = cohesionWeight;
 
-		this.sRule = new Separation(target);
-		this.aRule = new Alignment(target);
-		this.cRule = new Cohesion(target);
+		this.sRule = new Separation();
+		this.aRule = new Alignment();
+		this.cRule = new Cohesion();
 	}
 
-	public override Vector2 GetForce ()
+	public override Vector2 GetForce (Boid target, List<Boid> neighbors)
 	{
 		if (neighbors.Count > 0)
 		{
-			Vector2 separationForce = sRule.GetForce() * sWeight;
-			Vector2 alignmentForce = aRule.GetForce() * aWeight;
-			Vector2 cohesionForce = cRule.GetForce() * cWeight;
+			Vector2 separationForce = sRule.GetForce(target, neighbors) * sWeight;
+			Vector2 alignmentForce = aRule.GetForce(target, neighbors) * aWeight;
+			Vector2 cohesionForce = cRule.GetForce(target, neighbors) * cWeight;
 			Vector2 sumForce = separationForce + alignmentForce + cohesionForce;
-			return Vector2.ClampMagnitude(sumForce, target.maxSpeed);
+			return Vector2.ClampMagnitude(sumForce, target.maxForce);
 		} else
 		{
 			return new Vector2(0, 0);
 		}
-	}
-
-	public override void UpdateNeighbors (List<Boid> neighbors)
-	{
-		base.UpdateNeighbors(neighbors);
-		sRule.UpdateNeighbors(neighbors);
-		aRule.UpdateNeighbors(neighbors);
-		cRule.UpdateNeighbors(neighbors);
 	}
 }
 

@@ -3,25 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Boid : MonoBehaviour {
-	[SerializeField] BoidMgr mgr;
+	public float maxSpeed { get; set; }
+	public float maxForce { get; set; }
 
-	FlockingRuleSet ruleSet;
-
-	public float senseRadius { get; set; }
 	public BoidType type { get; set; }
 
-	[SerializeField] public Vector2 position { get; set; }
+	public Vector2 position { get; set; }
 	public Vector2 heading { get; set; }
-	public float maxSpeed { get; set; }
+	public Vector2 force { get; set; }
 
-	public void Init (BoidMgr mgr, BoidType type, float senseRadius, float maxSpeed, Vector2 heading) {
-		Debug.Log("Initializing");
-		this.mgr = mgr;
+	public void Init (BoidType type, float maxSpeed, float maxForce, Vector2 heading) {
 		this.type = type;
 		this.position = this.transform.position;
-		this.ruleSet = new FlockingRuleSet(this, 0.5f, 0.3f, 0.2f);
-		this.senseRadius = senseRadius;
 		this.maxSpeed = maxSpeed;
+		this.maxForce = maxForce;
 		this.heading = heading;
 	}
 
@@ -35,20 +30,19 @@ public abstract class Boid : MonoBehaviour {
 	}
 
 	public void MgrUpdate() {
-		Debug.Log("Updating");
-		ruleSet.UpdateNeighbors(mgr.FindNeighbors(this));
+		// Respect max force
+		force = Vector2.ClampMagnitude(force, maxForce);
 
-		Vector2 force = GetForce();
-		heading += force.normalized;
+		// Apply force and respect max speed
+		heading += force;
 		Vector2.ClampMagnitude(heading, maxSpeed);
 
-		position += force;
-
+		// Reset 2D and 3D positions
+		position += heading;
 		this.transform.position = position;
-	}
 
-	Vector2 GetForce()
-	{
-		return ruleSet.GetForce();
+		Vector3 eulerAngles = this.transform.eulerAngles;
+		eulerAngles.z = Mathf.Tan(heading.y / heading.x);
+		this.transform.eulerAngles = eulerAngles;
 	}
 }

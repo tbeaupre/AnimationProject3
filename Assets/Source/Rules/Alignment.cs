@@ -4,19 +4,21 @@ using UnityEngine;
 
 public class Alignment : FlockingRule {
 
-	public Alignment(Boid target) : base(target)
+	public override Vector2 GetForce(Boid target, List<Boid> neighbors)
 	{
-	}
-
-	public override Vector2 GetForce()
-	{
-		Vector2 averageHeading = new Vector2(0, 0);
-		foreach (Boid neighbor in neighbors)
+		if (neighbors.Count > 0)
 		{
-			averageHeading += neighbor.heading;
-		}
-		averageHeading /= neighbors.Count;
+			Vector2 averageHeading = new Vector2(0, 0);
+			foreach (Boid neighbor in neighbors)
+			{
+				averageHeading += neighbor.heading;
+			}
+			averageHeading /= neighbors.Count;
 
-		return averageHeading - target.heading;
+			return averageHeading - target.heading;
+		} else
+		{
+			return new Vector2(0, 0);
+		}
 	}
 }

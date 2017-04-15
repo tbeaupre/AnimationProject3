@@ -46,17 +46,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Source\Boids\Blue.cs" />
      <Compile Include="Assets\Source\Boids\Boid.cs" />
      <Compile Include="Assets\Source\Boids\BoidMgr.cs" />
      <Compile Include="Assets\Source\Boids\BoidType.cs" />
-     <Compile Include="Assets\Source\Boids\Green.cs" />
-     <Compile Include="Assets\Source\Boids\Red.cs" />
      <Compile Include="Assets\Source\Obstacle.cs" />
      <Compile Include="Assets\Source\Rules\Alignment.cs" />
      <Compile Include="Assets\Source\Rules\Cohesion.cs" />
      <Compile Include="Assets\Source\Rules\FlockingRule.cs" />
-     <Compile Include="Assets\Source\Rules\FlockingRuleSet.cs" />
      <Compile Include="Assets\Source\Rules\Rule.cs" />
      <Compile Include="Assets\Source\Rules\Separation.cs" />
      <Compile Include="Assets\Source\Walls\Boundary.cs" />

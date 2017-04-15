@@ -12,6 +12,7 @@ public class Obstacle : MonoBehaviour {
 		this.center = this.transform.position;
 	}
 
+	// Finds the nearest point on the boundary circle, doubles its distance from the center, and seeks towards that point.
 	public Vector2 GetForce(Boid target)
 	{
 		Vector2 result = new Vector2(0, 0);
@@ -43,11 +44,5 @@ public class Obstacle : MonoBehaviour {
 	{
 		Vector2 desired = location - target.position;
 		return Vector2.ClampMagnitude(desired, target.maxSpeed);
-	}
-
-	public Vector2 Flee(Boid target, Vector2 location)
-	{
-		Vector2 desired = Vector2.ClampMagnitude(target.position - location, target.maxSpeed);
-		return desired - target.heading;
 	}
 }

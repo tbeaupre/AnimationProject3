@@ -9,18 +9,18 @@ public class BoidMgr : MonoBehaviour {
 	public Boid greenBoidPrefab;
 
 	// Screen information
-	const int WIDTH = 134;
-	const int HEIGHT = 100;
+	const int WIDTH = 133;
+	const int HEIGHT = 99;
 
 	// Boid properties
 	const int QUANTITY = 10;
 	const float SENSE_RADIUS = 50;
 	const float COLLISION_RADIUS = 1;
-	const float MAX_SPEED = 1.5f;
+	const float MAX_SPEED = 1.2f;
 	const float MAX_FORCE = 2.5f;
 
 	// Boundary Rule
-	const float BOUNDARY_WEIGHT = 2f;
+	const float BOUNDARY_WEIGHT = 3f;
 	Boundary boundary = new Boundary(WIDTH, HEIGHT, MAX_SPEED * 2);
 
 	// Pursuit Rule
@@ -30,7 +30,7 @@ public class BoidMgr : MonoBehaviour {
 
 	// Obstacle
 	public Obstacle obstacle;
-	const float OBSTACLE_WEIGHT = 1f;
+	const float OBSTACLE_WEIGHT = 1.5f;
 
 	// Flocking Rule Set
 	const float SEPARATION_WEIGHT = 1f;
@@ -40,12 +40,13 @@ public class BoidMgr : MonoBehaviour {
 	Alignment aliRule = new Alignment();
 	Cohesion cohRule = new Cohesion();
 
-	List<Boid> boids = new List<Boid>(); // updated list of boids
+	// List of Boids
+	List<Boid> boids = new List<Boid>();
 	List<Boid> convertedBoids = new List<Boid>();
 
 	// Use this for initialization
 	void Start () {
-		Random.InitState(1);
+		Random.InitState(0);
 		CreateBoids(BoidType.BLUE, QUANTITY);
 		CreateBoids(BoidType.RED, QUANTITY);
 		CreateBoids(BoidType.GREEN, QUANTITY);
@@ -65,6 +66,7 @@ public class BoidMgr : MonoBehaviour {
 		}
 	}
 
+	// Retrieves the boid prefab associated with a certain type of boid
 	Boid GetBoidPrefab(BoidType type)
 	{
 		switch(type)
@@ -80,6 +82,7 @@ public class BoidMgr : MonoBehaviour {
 		}
 	}
 
+	// Finds a random starting position for a boid which is not in the middle of the obstacle
 	Vector2 GetRandomPos()
 	{
 		int x = Random.Range(-WIDTH, WIDTH);
@@ -92,6 +95,7 @@ public class BoidMgr : MonoBehaviour {
 		return result;
 	}
 
+	// Starts the boid off in a random direction
 	Vector2 GetRandomHeading()
 	{
 		float x = Random.Range(-MAX_SPEED, MAX_SPEED);
@@ -125,6 +129,7 @@ public class BoidMgr : MonoBehaviour {
 		}
 	}
 
+	// Sums the forces affecting a certain boid while prioritizing collision avoidance
 	Vector2 GetBoidForce(Boid boid)
 	{
 		// Boundaries
@@ -173,6 +178,7 @@ public class BoidMgr : MonoBehaviour {
 		return force;
 	}
 
+	// Detects whether or not a boid has caught its target
 	void CollisionDetect(Boid boid)
 	{
 		Boid target = FindClosestOfType(boid, boid.preyType);
@@ -189,6 +195,7 @@ public class BoidMgr : MonoBehaviour {
 		}
 	}
 
+	// Finds all neighbors of the same type in a certain sensing radius
 	public List<Boid> FindNeighbors(Boid target)
 	{
 		List<Boid> neighbors = new List<Boid>();
@@ -204,6 +211,7 @@ public class BoidMgr : MonoBehaviour {
 		return neighbors;
 	}
 
+	// Finds all neighbors of a certain type within a certain sensing radius
 	public List<Boid> FindNeighborsOfType(Boid target, BoidType type)
 	{
 		List<Boid> neighbors = new List<Boid>();
@@ -218,6 +226,7 @@ public class BoidMgr : MonoBehaviour {
 		return neighbors;
 	}
 
+	// Finds the CLOSEST boid of a certain type and returns it.
 	public Boid FindClosestOfType(Boid target, BoidType type)
 	{
 		Boid closestBoid = null;
@@ -235,6 +244,7 @@ public class BoidMgr : MonoBehaviour {
 		return closestBoid;
 	}
 
+	// Calculates the distance between boids
 	float Distance(Boid b1, Boid b2)
 	{
 		return Vector2.Distance(b1.position, b2.position);

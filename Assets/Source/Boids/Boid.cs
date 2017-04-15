@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Boid : MonoBehaviour {
+public class Boid : MonoBehaviour {
 	public float maxSpeed { get; set; }
 	public float maxForce { get; set; }
 
@@ -14,6 +14,7 @@ public abstract class Boid : MonoBehaviour {
 	public Vector2 heading { get; set; }
 	public Vector2 force { get; set; }
 
+	// Initializes the boid from a set of values. Used at start.
 	public void Init (BoidType type, float maxSpeed, float maxForce, Vector2 heading) {
 		this.type = type;
 		this.preyType = GetPreyType();
@@ -24,6 +25,7 @@ public abstract class Boid : MonoBehaviour {
 		this.heading = heading;
 	}
 
+	// Initializes the boid from another boid. Used in converting boids.
 	public void Init(Boid boid, BoidType type)
 	{
 		this.maxSpeed = boid.maxSpeed;
@@ -78,6 +80,7 @@ public abstract class Boid : MonoBehaviour {
 		}
 	}
 
+	// The updates which come from the boidManager
 	public void MgrUpdate() {
 		// Respect max force
 		force = Vector2.ClampMagnitude(force, maxForce);

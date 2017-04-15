@@ -15,6 +15,7 @@ public class Boundary
 		this.threshold = threshold;
 	}
 
+	// Reverses the heading of a boid if it approaches the boundary of the screen.
 	public Vector2 GetForce(Boid target)
 	{
 		Vector2 force = new Vector2(0, 0);

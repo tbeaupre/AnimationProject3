@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Separation : FlockingRule {
 
+	// Finds the force necessary to prevent collisions with neighbors
 	public override Vector2 GetForce(Boid target, List<Boid> neighbors)
 	{
 		Vector2 force = new Vector2(0, 0);

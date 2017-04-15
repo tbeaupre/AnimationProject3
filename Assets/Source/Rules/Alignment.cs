@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Alignment : FlockingRule {
 
+	// Finds the average heading of all neighbors and finds the force necessary to match that average
 	public override Vector2 GetForce(Boid target, List<Boid> neighbors)
 	{
 		if (neighbors.Count > 0)

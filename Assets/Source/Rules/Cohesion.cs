@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Cohesion : FlockingRule {
 
+	// Finds the average position of all neighbors and finds the force necessary to get there
 	public override Vector2 GetForce(Boid target, List<Boid> neighbors)
 	{
 		Vector2 center = new Vector2(0, 0);

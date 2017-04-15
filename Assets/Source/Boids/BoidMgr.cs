@@ -28,6 +28,10 @@ public class BoidMgr : MonoBehaviour {
 	const float PURSUE_WEIGHT = 0.5f;
 	Rule pursueEvadeRule = new Rule();
 
+	// Obstacle
+	public Obstacle obstacle;
+	const float OBSTACLE_WEIGHT = 1f;
+
 	// Flocking Rule Set
 	const float SEPARATION_WEIGHT = 1f;
 	const float ALIGNMENT_WEIGHT = 0.3f;
@@ -35,7 +39,6 @@ public class BoidMgr : MonoBehaviour {
 	Separation sepRule = new Separation();
 	Alignment aliRule = new Alignment();
 	Cohesion cohRule = new Cohesion();
-
 
 	List<Boid> boids = new List<Boid>(); // updated list of boids
 	List<Boid> convertedBoids = new List<Boid>();
@@ -81,7 +84,12 @@ public class BoidMgr : MonoBehaviour {
 	{
 		int x = Random.Range(-WIDTH, WIDTH);
 		int y = Random.Range(-HEIGHT, HEIGHT);
-		return new Vector2(x, y);
+		Vector2 result = new Vector2(x, y);
+		while (Vector2.Distance(result, new Vector2(0, 0)) < 30)
+		{
+			result *= 1.5f;
+		}
+		return result;
 	}
 
 	Vector2 GetRandomHeading()
@@ -119,14 +127,21 @@ public class BoidMgr : MonoBehaviour {
 
 	Vector2 GetBoidForce(Boid boid)
 	{
-		// Boundaries first!
+		// Boundaries
 		Vector2 force = boundary.GetForce(boid) * BOUNDARY_WEIGHT;
 		if (force.magnitude >= MAX_FORCE)
 		{
 			return Vector2.ClampMagnitude(force, MAX_FORCE);
 		}
 
-		// Evasion and Pursuit next!
+		// Center Obstacle
+		force += obstacle.GetForce(boid) * OBSTACLE_WEIGHT;
+		if (force.magnitude >= MAX_FORCE)
+		{
+			return Vector2.ClampMagnitude(force, MAX_FORCE);
+		}
+
+		// Evasion and Pursuit
 		force += pursueEvadeRule.Evade(boid, FindClosestOfType(boid, boid.predatorType)) * EVADE_WEIGHT;
 		if (force.magnitude >= MAX_FORCE)
 		{
@@ -138,7 +153,7 @@ public class BoidMgr : MonoBehaviour {
 			return Vector2.ClampMagnitude(force, MAX_FORCE);
 		}
 
-		// Flocking third!
+		// Flocking
 		force += sepRule.GetForce(boid, FindNeighbors(boid)) * SEPARATION_WEIGHT;
 		if (force.magnitude >= MAX_FORCE)
 		{
@@ -155,7 +170,6 @@ public class BoidMgr : MonoBehaviour {
 			return Vector2.ClampMagnitude(force, MAX_FORCE);
 		}
 
-		// Add in attraction and repulsion to other types
 		return force;
 	}
 

@@ -8,7 +8,6 @@ public class Boundary
 	float threshold;
 	float height;
 
-	//List<ForceField> walls = new List<ForceField>(4);
 	public Boundary (int width, int height, float threshold)
 	{
 		this.width = width;
